@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Izmir - COSMO PARK</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00d4ff;
+            --secondary: #ff00a8;
+            --dark: #0a0e27;
+            --darker: #05060f;
+            --light: #ffffff;
+            --gray: #666666;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            color: var(--light);
+            line-height: 1.6;
+        }
+
+        header {
+            background: rgba(10, 14, 39, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--primary);
+            padding: 1.5rem 0;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            gap: 1rem;
+            color: var(--secondary);
+        }
+
+        .restaurant-title {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .menu-container {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin: 3rem 0 2rem 0;
+            color: var(--primary);
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 1rem;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .menu-item {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.08), rgba(255, 0, 168, 0.08));
+            border: 2px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.15);
+        }
+
+        .menu-item h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .menu-item .description {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .menu-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price {
+            color: var(--secondary);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .btn-add {
+            background: var(--primary);
+            color: var(--dark);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-add:hover {
+            background: var(--secondary);
+            transform: scale(1.05);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+            margin-top: 4rem;
+            border-top: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .info-block {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 0, 168, 0.1));
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .info-block h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .info-block p {
+            color: var(--gray);
+        }
+
+        .cart-icon {
+            position: relative;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cart-icon:hover {
+            transform: scale(1.1);
+            color: var(--secondary);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--secondary);
+            color: var(--dark);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .menu-container {
+            margin-right: 400px;
+        }
+
+        .cart-container {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 380px;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(5, 6, 15, 0.95), rgba(10, 14, 39, 0.95));
+            border-left: 2px solid var(--primary);
+            box-shadow: -10px 0 40px rgba(0, 212, 255, 0.15);
+            overflow-y: auto;
+            padding: 2rem;
+            z-index: 999;
+            display: none;
+            flex-direction: column;
+        }
+
+        .cart-container.active {
+            display: flex;
+        }
+
+        .cart-header {
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+
+        .cart-item {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 3px solid var(--secondary);
+        }
+
+        .cart-item-emoji {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-name {
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        .cart-item-price {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-qty {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .qty-btn {
+            background: var(--primary);
+            color: var(--dark);
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        .qty-btn:hover {
+            background: var(--secondary);
+        }
+
+        .cart-total {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(255, 0, 168, 0.1));
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .total-label {
+            color: var(--gray);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .total-value {
+            color: var(--secondary);
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .cart-actions {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .btn-checkout {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--dark);
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-checkout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.25);
+        }
+
+        .btn-clear {
+            flex: 1;
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+            border: 1px solid #ff4444;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-clear:hover {
+            background: rgba(255, 68, 68, 0.3);
+        }
+
+        @keyframes flyToCart {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(calc(100vw - 190px), -50vh) scale(0.3);
+            }
+        }
+
+        .flying-item {
+            position: fixed;
+            font-size: 2rem;
+            pointer-events: none;
+            animation: flyToCart 0.8s ease-in forwards;
+            z-index: 9999;
+        }
+
+        @media (max-width: 1024px) {
+            .menu-container {
+                margin-right: 0;
+            }
+
+            .cart-container {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="back-link">← Вернуться</a>
+            <h1 class="restaurant-title">🌮 Izmir</h1>
+            <div class="cart-icon" onclick="toggleCart()">
+                🛒
+                <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="menu-container">
+        <div class="info-block">
+            <h2>Добро пожаловать в Shawarma King!</h2>
+            <p>Аутентичная шаурма на мангале с сочным мясом, свежими овощами и оригинальными соусами!</p>
+        </div>
+
+        <h2 class="section-title">🥙 КЛАССИЧЕСКАЯ ШАУРМА</h2>
+        <div class="menu-grid">
+            <div class="menu-item">
+                <h3>Шаурма Куриная</h3>
+                <p class="description">Сочное куриное мясо на мангале, свежие овощи, полусладкий соус.</p>
+                <div class="menu-footer">
+                    <span class="price">28,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <h3>Шаурма Говяжья</h3>
+                <p class="description">Говяжье мясо, травы, овощи, острый соус. Для смелых!</p>
+                <div class="menu-footer">
+                    <span class="price">35,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <h3>Шаурма Баранья</h3>
+                <p class="description">Нежное баранье мясо, специи, соус мята-йогурт.</p>
+                <div class="menu-footer">
+                    <span class="price">42,000сўм</span>
+                    <button class="txt-add">+ Добавить</button>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <h3>Шаурма Микс</h3>
+                <p class="description">Курица, говядина, баранина. Все вместе в одной!</p>
+                <div class="menu-footer">
+                    <span class="price">45,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <h3>Острая Шаурма</h3>
+                <p class="description">Курица, острый перец чили, острый соус. Огонь!</p>
+                <div class="menu-footer">
+                    <span class="price">32,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <h3>Морская Шаурма</h3>
+                <p class="description">Креветки, морская рыба, овощи, соус лимона.</p>
+                <div class="menu-footer">
+                    <span class="price">48,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">🌭 СУПЕР ШАУРМА</h2>
+        <div class="menu-grid">
+            <div class="menu-item">
+                <h3>Суперкруглая</h3>
+                <p class="description">Огромная круглая лепёшка, все виды мяса, помидоры, огурцы, капуста, все соусы!</p>
+                <div class="menu-footer">
+                    <span class="price">65,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <h3>Королевская</h3>
+                <p class="description">Два слоя лепёшки, говядина, баранина, курица, всё с доставкой.</p>
+                <div class="menu-footer">
+                    <span class="price">72,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <h3>Люкс Шаурма</h3>
+                <p class="description">Премиум мясо, дополнительная лепёшка, специальный соус от шефа.</p>
+                <div class="menu-footer">
+                    <span class="price">85,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <h3>Ночной Король</h3>
+                <p class="description">Все мясо, двойные овощи, соус-микс. Для ночных гуляк!</p>
+                <div class="menu-footer">
+                    <span class="price">68,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">🍗 МЯСНЫЕ ПЛЯСКИ</h2>
+        <div class="menu-grid">
+            <div class="menu-item">
+                <h3>Куриная Ножка</h3>
+                <p class="description">3 куриные ножки на мангале с пряностями.</p>
+                <div class="menu-footer">
+                    <span class="price">38,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <h3>Люля Кебаб</h3>
+                <p class="description">Фарш из ягнёнка, травы, вкусная ароматная колбаска.</p>
+                <div class="menu-footer">
+                    <span class="price">42,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <h3>Кебаб Люкс</h3>
+                <p class="description">3 кусочка тефтелей из мяса на шампурах.</p>
+                <div class="menu-footer">
+                    <span class="price">52,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <h3>Куриное Филе</h3>
+                <p class="description">Филе на мангале с овощами и травами.</p>
+                <div class="menu-footer">
+                    <span class="price">45,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">🥙 ГАРНИРЫ & ДОБАВКИ</h2>
+        <div class="menu-grid">
+            <div class="menu-item">
+                <h3>Картофель вкр. горох</h3>
+                <p class="description">Жареный картофель с зелёным горохом и специями.</p>
+                <div class="menu-footer">
+                    <span class="price">22,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <h3>Рис с мясом</h3>
+                <p class="description">Рис басмати с кусочками мяса и овощами.</p>
+                <div class="menu-footer">
+                    <span class="price">28,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <h3>Свежий Салат</h3>
+                <p class="description">Помидоры, огурцы, капуста, лук с оливковым маслом.</p>
+                <div class="menu-footer">
+                    <span class="price">15,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <h3>Питта/Лепёшка</h3>
+                <p class="description">Свежая тёплая лепёшка для шаурмы.</p>
+                <div class="menu-footer">
+                    <span class="price">8,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <h3>Соус на выбор</h3>
+                <p class="description">Острый, мягкий, чесночный, йогурт-соус.</p>
+                <div class="menu-footer">
+                    <span class="price">3,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <h3>Дополнительное мясо</h3>
+                <p class="description">Порция приготовленного на мангале мяса.</p>
+                <div class="menu-footer">
+                    <span class="price">35,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">🥤 НАПИТКИ</h2>
+        <div class="menu-grid">
+            <div class="menu-item">
+                <h3>Айран</h3>
+                <p class="description">Традиционный напиток из йогурта и травами.</p>
+                <div class="menu-footer">
+                    <span class="price">12,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <h3>Лимонад</h3>
+                <p class="description">Свежий лимонад с мятой и лимоном.</p>
+                <div class="menu-footer">
+                    <span class="price">15,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <h3>Компот</h3>
+                <p class="description">Традиционный узбекский компот из сухофруктов.</p>
+                <div class="menu-footer">
+                    <span class="price">18,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+
+            <div class="menu-item">
+                <h3>Чай</h3>
+                <p class="description">Горячий зелёный или чёрный чай.</p>
+                <div class="menu-footer">
+                    <span class="price">10,000сўм</span>
+                    <button class="btn-add">+ Добавить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cart-container" id="cartContainer">
+        <div class="cart-header">🛒 Корзина</div>
+        <div class="cart-items" id="cartItems"></div>
+        <div class="cart-total">
+            <div class="total-label">ИТОГО</div>
+            <div class="total-value" id="cartTotal">0сўм</div>
+        </div>
+        <div class="cart-actions">
+            <button class="btn-checkout" onclick="checkout()">Оформить</button>
+            <button class="btn-clear" onclick="clearCart()">Очистить</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 COSMO PARK - Shawarma King. Доставка: 2-3 мин | Горячая и вкусная всегда!</p>
+    </footer>
+
+    <script>
+        const menuData = {
+            shawarma: [
+                { name: 'Шаурма Куриная', desc: 'Сочное куриное мясо на мангале, свежие овощи, полусладкий соус', price: 28000, emoji: '🥙' },
+                { name: 'Шаурма Говяжья', desc: 'Говяжье мясо, травы, овощи, острый соус', price: 35000, emoji: '🥙' },
+                { name: 'Шаурма Баранья', desc: 'Нежное баранье мясо, специи, соус мята-йогурт', price: 42000, emoji: '🥙' },
+                { name: 'Шаурма Микс', desc: 'Курица, говядина, баранина. Все вместе в одной', price: 45000, emoji: '🥙' },
+                { name: 'Острая Шаурма', desc: 'Курица, острый перец чили, острый соус', price: 32000, emoji: '🥙' },
+                { name: 'Морская Шаурма', desc: 'Креветки, морская рыба, овощи, соус лимона', price: 48000, emoji: '🥙' }
+            ],
+            super: [
+                { name: 'Суперкруглая', desc: 'Огромная круглая лепёшка, все виды мяса, помидоры, огурцы, капуста, все соусы', price: 65000, emoji: '🐑' },
+                { name: 'Королевская', desc: 'Два слоя лепёшки, говядина, баранина, курица', price: 72000, emoji: '🐑' },
+                { name: 'Люкс Шаурма', desc: 'Премиум мясо, дополнительная лепёшка, специальный соус от шефа', price: 85000, emoji: '🐑' },
+                { name: 'Ночной Король', desc: 'Все мясо, двойные овощи, соус-микс', price: 68000, emoji: '🐑' }
+            ],
+            meat: [
+                { name: 'Куриная Ножка', desc: '3 куриные ножки на мангале с пряностями', price: 38000, emoji: '🍗' },
+                { name: 'Люля Кебаб', desc: 'Фарш из ягнёнка, травы, вкусная ароматная колбаска', price: 42000, emoji: '🍗' },
+                { name: 'Кебаб Люкс', desc: '3 кусочка тефтелей из мяса на шампурах', price: 52000, emoji: '🍗' },
+                { name: 'Куриное Филе', desc: 'Филе на мангале с овощами и травами', price: 45000, emoji: '🍗' }
+            ],
+            sides: [
+                { name: 'Картофель вкр. горох', desc: 'Жареный картофель с зелёным горохом и специями', price: 22000, emoji: '🥔' },
+                { name: 'Рис с мясом', desc: 'Рис басмати с кусочками мяса и овощами', price: 28000, emoji: '🍚' },
+                { name: 'Свежий Салат', desc: 'Помидоры, огурцы, капуста, лук с оливковым маслом', price: 15000, emoji: '🥗' },
+                { name: 'Питта/Лепёшка', desc: 'Свежая тёплая лепёшка для шаурмы', price: 8000, emoji: '🥖' },
+                { name: 'Соус на выбор', desc: 'Острый, мягкий, чесночный, йогурт-соус', price: 3000, emoji: '🥫' },
+                { name: 'Дополнительное мясо', desc: 'Порция приготовленного на мангале мяса', price: 35000, emoji: '🥓' }
+            ],
+            drinks: [
+                { name: 'Айран', desc: 'Традиционный напиток из йогурта и травами', price: 12000, emoji: '🥛' },
+                { name: 'Лимо' над', desc: 'Свежий лимонад с мятой и лимоном', price: 15000, emoji: '🍋' },
+                { name: 'Компот', desc: 'Традиционный узбекский компот из сухофруктов', price: 18000, emoji: '🍯' },
+                { name: 'Чай', desc: 'Горячий зелёный или чёрный чай', price: 10000, emoji: '☕' }
+            ]
+        };
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        window.addEventListener('load', () => {
+            renderMenu();
+            updateCartUI();
+        });
+
+        function renderMenu() {
+            const btns = document.querySelectorAll('.btn-add');
+            btns.forEach((btn, index) => {
+                btn.addEventListener('click', (e) => {
+                    const item = btn.closest('.menu-item');
+                    const name = item.querySelector('h3').textContent;
+                    const priceText = item.querySelector('.price').textContent;
+                    const price = parseInt(priceText.replace(/\\D/g, ''));
+                    const emoji = getEmojiForItem(name);
+                    addToCart(name, price, emoji, e);
+                });
+            });
+        }
+
+        function getEmojiForItem(name) {
+            for (const category in menuData) {
+                const item = menuData[category].find(i => i.name === name);
+                if (item) return item.emoji;
+            }
+            return '🍽️';
+        }
+
+        function addToCart(name, price, emoji, event) {
+            const existingItem = cart.find(item => item.name === name);
+            if (existingItem) {
+                existingItem.qty++;
+            } else {
+                cart.push({ name, price, emoji, qty: 1 });
+            }
+            saveCart();
+            updateCartUI();
+            createFlyingAnimation(event, emoji);
+        }
+
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        function updateCartUI() {
+            const badge = document.getElementById('cartBadge');
+            const total = cart.length;
+            
+            if (total > 0) {
+                badge.style.display = 'flex';
+                badge.textContent = total;
+            } else {
+                badge.style.display = 'none';
+            }
+
+            const cartItems = document.getElementById('cartItems');
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<div style="text-align: center; color: var(--gray); padding: 2rem;">Корзина пуста</div>';
+            } else {
+                cartItems.innerHTML = cart.map((item, idx) => `
+                    <div class="cart-item">
+                        <div class="cart-item-emoji">${item.emoji}</div>
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">${(item.price * item.qty).toLocaleString()}сўм</div>
+                        <div class="cart-item-qty">
+                            <button class="qty-btn" onclick="updateQty(${idx}, -1)">−</button>
+                            <span style="min-width: 20px; text-align: center;">${item.qty}×</span>
+                            <button class="qty-btn" onclick="updateQty(${idx}, 1)">+</button>
+                            <button class="qty-btn" style="background: #ff4444; margin-left: auto;" onclick="removeFromCart(${idx})">×</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            document.getElementById('cartTotal').textContent = totalPrice.toLocaleString() + 'сўм';
+        }
+
+        function removeFromCart(idx) {
+            cart.splice(idx, 1);
+            saveCart();
+            updateCartUI();
+        }
+
+        function updateQty(idx, change) {
+            if (cart[idx].qty + change <= 0) {
+                removeFromCart(idx);
+            } else {
+                cart[idx].qty += change;
+                saveCart();
+                updateCartUI();
+            }
+        }
+
+        function toggleCart() {
+            document.getElementById('cartContainer').classList.toggle('active');
+        }
+
+        function createFlyingAnimation(event, emoji) {
+            const btn = event.target;
+            const rect = btn.getBoundingClientRect();
+            const flyingItem = document.createElement('div');
+            flyingItem.className = 'flying-item';
+            flyingItem.textContent = emoji;
+            flyingItem.style.left = rect.left + 'px';
+            flyingItem.style.top = rect.top + 'px';
+            document.body.appendChild(flyingItem);
+            setTimeout(() => flyingItem.remove(), 800);
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert('Корзина пуста!');
+                return;
+            }
+            
+            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const order = {
+                id: 'ORD-' + Date.now(),
+                items: cart.map(item => ({
+                    name: item.name,
+                    price: item.price,
+                    emoji: item.emoji,
+                    qty: item.qty
+                })),
+                total: total,
+                status: 'new',
+                time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+                timestamp: Date.now()
+            };
+
+            let allOrders = JSON.parse(localStorage.getItem('allOrders')) || [];
+            allOrders.unshift(order);
+            localStorage.setItem('allOrders', JSON.stringify(allOrders));
+
+            alert(`✅ Ваш заказ принят!\n\nНомер: ${order.id}\nСумма: ${total.toLocaleString()}сўм\n\n(Отслеживайте статус в панели управления)`);
+            clearCart();
+        }
+
+        function clearCart() {
+            cart = [];
+            saveCart();
+            updateCartUI();
+            document.getElementById('cartContainer').classList.remove('active');
+        }
+    </script>
+</body>
+</html>

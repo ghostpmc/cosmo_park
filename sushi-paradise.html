@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doner King - COSMO PARK</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00d4ff;
+            --secondary: #ff00a8;
+            --dark: #0a0e27;
+            --darker: #05060f;
+            --light: #ffffff;
+            --gray: #666666;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            color: var(--light);
+            line-height: 1.6;
+        }
+
+        header {
+            background: rgba(10, 14, 39, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--primary);
+            padding: 1.5rem 0;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            gap: 1rem;
+            color: var(--secondary);
+        }
+
+        .restaurant-title {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .menu-container {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+            margin-right: 400px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin: 3rem 0 2rem 0;
+            color: var(--primary);
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 1rem;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .menu-item {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.08), rgba(255, 0, 168, 0.08));
+            border: 2px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent, rgba(0, 212, 255, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.15);
+        }
+
+        .menu-item:hover::before {
+            opacity: 1;
+        }
+
+        .dish-image {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 0, 168, 0.1));
+            border-radius: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .menu-item h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .menu-item .description {
+            color: var(--gray);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+            position: relative;
+            z-index: 1;
+        }
+
+        .menu-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            gap: 0.5rem;
+        }
+
+        .price {
+            color: var(--secondary);
+            font-weight: bold;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        .btn-add {
+            background: var(--primary);
+            color: var(--dark);
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .btn-add:hover {
+            background: var(--secondary);
+            transform: scale(1.05);
+        }
+
+        .btn-add:active {
+            transform: scale(0.95);
+        }
+
+        /* Cart Styles */
+        .cart-container {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 380px;
+            height: 100vh;
+            background: rgba(10, 14, 39, 0.98);
+            border-left: 2px solid var(--primary);
+            display: flex;
+            flex-direction: column;
+            z-index: 999;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: -5px 0 30px rgba(0, 212, 255, 0.2);
+        }
+
+        .cart-container.active {
+            transform: translateX(0);
+        }
+
+        .cart-header {
+            padding: 1.5rem;
+            border-bottom: 2px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+
+        .cart-close {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cart-close:hover {
+            color: var(--secondary);
+            transform: rotate(90deg);
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .cart-items::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .cart-items::-webkit-scrollbar-track {
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .cart-items::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .cart-item {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 0, 168, 0.1));
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+            font-size: 0.95rem;
+        }
+
+        .cart-item-price {
+            color: var(--secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-qty {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .qty-btn {
+            background: var(--primary);
+            color: var(--dark);
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            font-size: 0.8rem;
+        }
+
+        .qty-btn:hover {
+            background: var(--secondary);
+        }
+
+        .qty-display {
+            min-width: 18px;
+            text-align: center;
+            color: var(--light);
+            font-size: 0.9rem;
+        }
+
+        .remove-btn {
+            background: var(--secondary);
+            color: var(--light);
+            border: none;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .remove-btn:hover {
+            background: #ff1199;
+        }
+
+        .cart-empty {
+            color: var(--gray);
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        .cart-footer {
+            border-top: 2px solid var(--primary);
+            padding: 1.5rem;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: var(--light);
+            font-size: 0.95rem;
+        }
+
+        .cart-total-price {
+            color: var(--secondary);
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        .btn-checkout {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--dark);
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-checkout:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-clear {
+            width: 100%;
+            padding: 0.7rem;
+            background: transparent;
+            color: var(--gray);
+            border: 1px solid var(--gray);
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-clear:hover {
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+
+        .cart-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 50%;
+            color: var(--dark);
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 998;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .cart-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--secondary);
+            color: var(--light);
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        /* Flying animation */
+        @keyframes flyToCart {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(calc(100vw - 30px), calc(100vh - 30px)) scale(0.1);
+            }
+        }
+
+        .flying-item {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+            font-size: 2.5rem;
+            animation: flyToCart 0.8s ease-in forwards;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+            margin-top: 4rem;
+            border-top: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .info-block {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 0, 168, 0.1));
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .info-block h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .info-block p {
+            color: var(--gray);
+        }
+
+        @media (max-width: 1024px) {
+            .menu-container {
+                margin-right: 0;
+            }
+
+            .cart-container {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-toggle {
+                bottom: 1rem;
+                right: 1rem;
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="back-link">← Вернуться</a>
+            <h1 class="restaurant-title">� Doner King</h1>
+            <div style="width: 100px;"></div>
+        </div>
+    </header>
+
+    <div class="menu-container">
+        <div class="info-block">
+            <h2>Добро пожаловать в Doner King!</h2>
+            <p>Выберите блюда и добавьте в корзину! 🛒 Нажмите кнопку корзины внизу экрана</p>
+        </div>
+
+        <h2 class="section-title">🍕 ПИЦЦА (35 см)</h2>
+        <div class="menu-grid" id="pizzaGrid"></div>
+
+        <h2 class="section-title">🛍️ COMBO</h2>
+        <div class="menu-grid" id="comboGrid"></div>
+
+        <h2 class="section-title">🍔 БУРГЕРЫ</h2>
+        <div class="menu-grid" id="burgerGrid"></div>
+
+        <h2 class="section-title">🥪 СЭНДВИЧИ</h2>
+        <div class="menu-grid" id="sandwichGrid"></div>
+
+        <h2 class="section-title">🌭 ХОТ-ДОГИ</h2>
+        <div class="menu-grid" id="hotdogGrid"></div>
+
+        <h2 class="section-title">🌯 ДОНЕР</h2>
+        <div class="menu-grid" id="donerGrid"></div>
+
+        <h2 class="section-title">🌯 ЛАВАШ</h2>
+        <div class="menu-grid" id="lavashGrid"></div>
+
+        <h2 class="section-title">🍽️ БЛЮДА (ТАОМЛАР)</h2>
+        <div class="menu-grid" id="dishesGrid"></div>
+
+        <h2 class="section-title">🍟 ГАРНИРЫ</h2>
+        <div class="menu-grid" id="sidesGrid"></div>
+
+        <h2 class="section-title">🥫 СОУСЫ</h2>
+        <div class="menu-grid" id="saucesGrid"></div>
+
+        <h2 class="section-title">🥤 НАПИТКИ (ИЧИМЛИКЛАР)</h2>
+        <div class="menu-grid" id="drinksGrid"></div>
+    </div>
+
+    <!-- Cart Container -->
+    <div class="cart-container" id="cartContainer">
+        <div class="cart-header">
+            <h2 class="cart-title">🛒 Корзина</h2>
+            <button class="cart-close" onclick="toggleCart()">✕</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="cart-empty">Корзина пуста</div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Итого:</span>
+                <span class="cart-total-price" id="cartTotal">0сўм</span>
+            </div>
+            <button class="btn-checkout" onclick="checkout()">Оформить</button>
+            <button class="btn-clear" onclick="clearCart()">Очистить</button>
+        </div>
+    </div>
+
+    <!-- Cart Toggle Button -->
+    <button class="cart-toggle" id="cartToggle" onclick="toggleCart()">
+        🛒
+        <span class="cart-badge" id="cartBadge">0</span>
+    </button>
+
+    <footer>
+        <p>&copy; 2026 COSMO PARK - Sushi Paradise</p>
+    </footer>
+
+    <script>
+        const menuData = {
+            pizza: [
+                { name: 'Маргарита', price: 65000, emoji: '🍕' },
+                { name: 'Пепперони', price: 85000, emoji: '🍕' },
+                { name: 'Товукли', price: 89000, emoji: '🍕' },
+                { name: 'Мол гуштли', price: 102000, emoji: '🍕' },
+                { name: '4 сезона', price: 93000, emoji: '🍕' },
+                { name: 'Ассорти', price: 120000, emoji: '🍕' },
+                { name: 'Курка Микс', price: 115000, emoji: '🍕' },
+                { name: 'Жюльен', price: 125000, emoji: '🍕' }
+            ],
+            combo: [
+                { name: 'COMBO 1', desc: 'Хот-дог стандарт, картофель фри мини, кола 0.5', price: 29000, emoji: '🛍️' },
+                { name: 'COMBO 2', desc: 'Лаваш средний, картофель фри мини, кола 0.5', price: 44000, emoji: '🛍️' },
+                { name: 'COMBO 3', desc: 'BBQ донер, картофель фри мини, кола 0.5', price: 45000, emoji: '🛍️' },
+                { name: 'COMBO 4', desc: 'Бургер, картофель фри мини, кола 0.5', price: 45000, emoji: '🛍️' },
+                { name: 'COMBO 5', desc: 'Чикен бургер, картофель фри мини, кола 0.5', price: 42000, emoji: '🛍️' },
+                { name: 'COMBO 6', desc: '2 лаваша средних, 2 картофеля фри мини, 2 колы 0.5', price: 99000, emoji: '🛍️' },
+                { name: 'COMBO 7', desc: '2 лаваша средних, BBQ бургер, BBQ донер, 2 картофеля фри, 4 колы 0.5', price: 175000, emoji: '🛍️' },
+                { name: 'COMBO 8', desc: '2 BBQ донера, чикен бургер, 2 картофеля фри мини, сок 1л', price: 125000, emoji: '🛍️' },
+                { name: 'COMBO 9', desc: 'Пицца Пепперони, пицца Мол гуштли, 4 колы 0.5, 2 соуса', price: 190000, emoji: '🛍️' },
+                { name: 'COMBO HOT 1', desc: 'Хот-дог стандарт, картофель фри мини, чай', price: 25000, emoji: '☕' },
+                { name: 'COMBO HOT 2', desc: 'Лаваш средний, картофель фри мини, чай', price: 42000, emoji: '☕' },
+                { name: 'COMBO HOT 3', desc: 'BBQ донер, картофель фри мини, чай', price: 45000, emoji: '☕' },
+                { name: 'COMBO KIDS', desc: 'Хот-дог мини, картофель фри мини, сок мини', price: 25000, emoji: '👶' }
+            ],
+            burger: [
+                { name: 'BBQ бургер', price: 34000, emoji: '🍔' },
+                { name: 'BBQ чизбургер', price: 37000, emoji: '🍔' },
+                { name: 'BBQ даблбургер', price: 50000, emoji: '🍔' },
+                { name: 'BBQ дабл чизбургер', price: 56000, emoji: '🍔' },
+                { name: 'Чикен бургер', price: 31000, emoji: '🍔' },
+                { name: 'Чикен чизбургер', price: 34000, emoji: '🍔' }
+            ],
+            sandwich: [
+                { name: 'Клаб сэндвич', price: 48000, emoji: '🥪' },
+                { name: 'Клаб сэндвич (вариант 2)', price: 42000, emoji: '🥪' }
+            ],
+            hotdog: [
+                { name: 'Стандарт', price: 16000, emoji: '🌭' },
+                { name: 'Дабл', price: 25000, emoji: '🌭' },
+                { name: 'Хот-дог KIDS', price: 16000, emoji: '🌭' }
+            ],
+            doner: [
+                { name: 'Донер', price: 33000, emoji: '🌯' },
+                { name: 'Донер (с сырным соусом)', price: 35000, emoji: '🌯' },
+                { name: 'Донер острый', price: 33000, emoji: '🌯' },
+                { name: 'BBQ донер', price: 35000, emoji: '🌯' },
+                { name: 'BBQ (с сырным соусом)', price: 37000, emoji: '🌯' }
+            ],
+            lavash: [
+                { name: 'Мини', price: 28000, emoji: '🌯' },
+                { name: 'Мини с сыром', price: 31000, emoji: '🌯' },
+                { name: 'Средний', price: 34000, emoji: '🌯' },
+                { name: 'Средний с сыром', price: 35000, emoji: '🌯' },
+                { name: 'Большой', price: 37000, emoji: '🌯' },
+                { name: 'Большой с сыром', price: 40000, emoji: '🌯' },
+                { name: 'Острый', price: 37000, emoji: '🌯' },
+                { name: 'Тандыр', price: 38000, emoji: '🌯' }
+            ],
+            dishes: [
+                { name: 'Домашний сет (говядина)', price: 50000, emoji: '🍽️' },
+                { name: 'Котлетный сет (говядина)', price: 50000, emoji: '🍽️' },
+                { name: 'Котлетный сет (курица)', price: 45000, emoji: '🍽️' }
+            ],
+            sides: [
+                { name: 'Лепёшка (нон)', price: 4000, emoji: '🥖' },
+                { name: 'Картофель фри мини', price: 15000, emoji: '🍟' },
+                { name: 'Картофель фри макси', price: 18000, emoji: '🍟' }
+            ],
+            sauces: [
+                { name: 'Кетчуп', price: 4000, emoji: '🥫' },
+                { name: 'Сырный', price: 4000, emoji: '🥫' },
+                { name: 'Чили', price: 4000, emoji: '🥫' },
+                { name: 'Чесночный', price: 4000, emoji: '🥫' },
+                { name: 'BBQ', price: 4000, emoji: '🥫' }
+            ],
+            drinks: [
+                { name: 'Чай', price: 4000, emoji: '☕' },
+                { name: 'Лимонный чай', price: 7000, emoji: '🍋' },
+                { name: 'Газированная вода 0.5', price: 4000, emoji: '💧' },
+                { name: 'Милли кола 0.5', price: 7000, emoji: '🥤' },
+                { name: 'Черноголовка 0.5', price: 10000, emoji: '🥤' },
+                { name: 'Сок 1л', price: 18000, emoji: '🧃' }
+            ]
+        };
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function renderMenu() {
+            renderSection('pizzaGrid', menuData.pizza);
+            renderSection('comboGrid', menuData.combo);
+            renderSection('burgerGrid', menuData.burger);
+            renderSection('sandwichGrid', menuData.sandwich);
+            renderSection('hotdogGrid', menuData.hotdog);
+            renderSection('donerGrid', menuData.doner);
+            renderSection('lavashGrid', menuData.lavash);
+            renderSection('dishesGrid', menuData.dishes);
+            renderSection('sidesGrid', menuData.sides);
+            renderSection('saucesGrid', menuData.sauces);
+            renderSection('drinksGrid', menuData.drinks);
+        }
+
+        function renderSection(gridId, items) {
+            const grid = document.getElementById(gridId);
+            grid.innerHTML = items.map((item, idx) => `
+                <div class="menu-item">
+                    <div class="dish-image">${item.emoji}</div>
+                    <h3>${item.name}</h3>
+                    ${item.desc ? `<p class="description">${item.desc}</p>` : ''}
+                    <div class="menu-footer">
+                        <span class="price">${(item.price).toLocaleString()}сўм</span>
+                        <button class="btn-add" onclick="addToCart('${item.name}', ${item.price}, '${item.emoji}', event)">+</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addToCart(name, price, emoji, event) {
+            const existingItem = cart.find(item => item.name === name);
+            
+            if (existingItem) {
+                existingItem.qty++;
+            } else {
+                cart.push({ name, price, emoji, qty: 1 });
+            }
+
+            saveCart();
+            updateCartUI();
+            createFlyingAnimation(event, emoji);
+        }
+
+        function createFlyingAnimation(event, emoji) {
+            const btn = event.target;
+            const rect = btn.getBoundingClientRect();
+            
+            const flyingItem = document.createElement('div');
+            flyingItem.className = 'flying-item';
+            flyingItem.textContent = emoji;
+            flyingItem.style.left = rect.left + 'px';
+            flyingItem.style.top = rect.top + 'px';
+            
+            document.body.appendChild(flyingItem);
+            
+            setTimeout(() => flyingItem.remove(), 800);
+        }
+
+        function removeFromCart(idx) {
+            cart.splice(idx, 1);
+            saveCart();
+            updateCartUI();
+        }
+
+        function updateQty(idx, change) {
+            cart[idx].qty = Math.max(1, cart[idx].qty + change);
+            saveCart();
+            updateCartUI();
+        }
+
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        function updateCartUI() {
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            const cartBadge = document.getElementById('cartBadge');
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<div class="cart-empty">Корзина пуста</div>';
+                cartTotal.textContent = '0сўм';
+                cartBadge.textContent = '0';
+                return;
+            }
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+
+            cartItems.innerHTML = cart.map((item, idx) => `
+                <div class="cart-item">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.emoji} ${item.name}</div>
+                        <div class="cart-item-price">${(item.price).toLocaleString()}сўм × ${item.qty}</div>
+                        <div class="cart-item-qty">
+                            <button class="qty-btn" onclick="updateQty(${idx}, -1)">−</button>
+                            <span class="qty-display">${item.qty}</span>
+                            <button class="qty-btn" onclick="updateQty(${idx}, 1)">+</button>
+                        </div>
+                    </div>
+                    <button class="remove-btn" onclick="removeFromCart(${idx})">X</button>
+                </div>
+            `).join('');
+
+            cartTotal.textContent = (total).toLocaleString() + 'сўм';
+            cartBadge.textContent = totalItems;
+        }
+
+        function toggleCart() {
+            document.getElementById('cartContainer').classList.toggle('active');
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert('Корзина пуста!');
+                return;
+            }
+            
+            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const order = {
+                id: 'ORD-' + Date.now(),
+                items: cart.map(item => ({
+                    name: item.name,
+                    price: item.price,
+                    emoji: item.emoji,
+                    qty: item.qty
+                })),
+                total: total,
+                status: 'new',
+                time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+                timestamp: Date.now()
+            };
+
+            let allOrders = JSON.parse(localStorage.getItem('allOrders')) || [];
+            allOrders.unshift(order);
+            localStorage.setItem('allOrders', JSON.stringify(allOrders));
+
+            alert(`✅ Ваш заказ принят!\n\nНомер: ${order.id}\nСумма: ${total.toLocaleString()}сўм\n\n(Отслеживайте статус в панели управления)`);
+            clearCart();
+        }
+
+        function clearCart() {
+            if (cart.length === 0) return;
+            if (confirm('Очистить корзину?')) {
+                cart = [];
+                saveCart();
+                updateCartUI();
+            }
+        }
+
+        // Initialize
+        renderMenu();
+        updateCartUI();
+    </script>
+</body>
+</html>
